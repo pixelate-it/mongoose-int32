@@ -3,3 +3,5 @@
 # dont include the tests
 test/
 docs.js
+# dont include github workflows
+.github

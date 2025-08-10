@@ -2,9 +2,13 @@ name: Build
 
 on:
     push:
-        branches:
-            - master
+        paths:
+            - ".github/workflows/build.yml"
+            - "src/**"
     pull_request:
+        paths:
+            - ".github/workflows/build.yml"
+            - "src/**"
 
 permissions:
     contents: write
