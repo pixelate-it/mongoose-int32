@@ -1,0 +1,38 @@
+name: Build
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v3
+
+            - name: Setup Node.js 20.16
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "20.16"
+
+            - name: Install dependencies with yarn
+              run: yarn install --frozen-lockfile
+
+            - name: Build dist
+              run: yarn build
+
+            - name: Commit Changes
+              if: github.ref == 'refs/heads/main'
+              run: |
+                  git config --global user.name "github-actions[bot]"
+                  git config --global user.email "github-actions[bot]@users.noreply.github.com"
+                  git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+                  git add --force dist/
+                  git commit -m "Build: successful" || echo "No changes"
+                  git push
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
